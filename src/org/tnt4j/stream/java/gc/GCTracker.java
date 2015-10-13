@@ -49,7 +49,6 @@ public class GCTracker {
 			createTracker();
 			List<GarbageCollectorMXBean> gcbeans = java.lang.management.ManagementFactory.getGarbageCollectorMXBeans();
 			for (GarbageCollectorMXBean gcbean : gcbeans) {
-				System.out.println("Tracking gc=" + gcbean.getName());
 				NotificationEmitter emitter = (NotificationEmitter) gcbean;
 				NotificationListener listener = new GCNotificationListener(logger);
 				emitter.addNotificationListener(listener, null, null);
