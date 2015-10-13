@@ -4,7 +4,7 @@ Features:
 * Measure GC performance, duration
 * Measure memory pools before and after GC cycles
 * Stream GC details to file, log4j
-* Stream to https://www.jkoolcloud.com for visual analysis (requires JESL library)
+* Stream to https://www.jkoolcloud.com for visual analysis (requires https://github.com/Nastel/JESL library)
 
 Running Stream-GC as javaagent:
 ```java
