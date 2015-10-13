@@ -42,18 +42,28 @@ public class GCNotificationListener implements NotificationListener {
 
 	@Override
 	public void handleNotification(Notification notification, Object handback) {
-		System.out.println("GC Event gc=" + notification.getType() + ", msg=" + notification.getMessage());
 		if (notification.getType().equals(GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION)) {
 			GarbageCollectionNotificationInfo info = GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
-			String msg = info.getGcAction() + ": id(" + info.getGcInfo().getId() + ") " + info.getGcName() + " cause("
-			        + info.getGcCause() + ") duration.ms(" + info.getGcInfo().getDuration() + "); start-end times: "
-			        + info.getGcInfo().getStartTime() + "-" + info.getGcInfo().getEndTime();
-	
-			TrackingEvent gcEvent = logger.newEvent(OpLevel.TRACE, OpType.CLEAR, info.getGcAction(), null, info.getGcName(), msg);
+			
+			totalGcDuration += info.getGcInfo().getDuration();
+			long gcPercent = (totalGcDuration * 100L) / info.getGcInfo().getEndTime();
+
+			String msg = "GC action={0} gc.id={1} gc.type={2}, msg={3}, duration.ms={4}, total.gc.ms={5}, gc.percent={6}, gc.cause={7}, start.end.time={8}-{9}";			
+			TrackingEvent gcEvent = logger.newEvent(OpLevel.TRACE, OpType.CLEAR, info.getGcAction(), null, info.getGcName(), msg,
+					info.getGcAction(),
+					info.getGcInfo().getId(),
+					notification.getType(),
+					notification.getMessage(),
+					info.getGcInfo().getDuration(),
+					totalGcDuration, 
+					gcPercent,
+					info.getGcCause(),
+					info.getGcInfo().getStartTime(),
+					info.getGcInfo().getEndTime());
+			
 			gcEvent.stop(TimeUnit.MILLISECONDS.toMicros(info.getGcInfo().getDuration()));
 			gcEvent.getOperation().setException(info.getGcCause());
 
-			// Get the information about each memory space, and pretty print it
 			Map<String, MemoryUsage> membefore = info.getGcInfo().getMemoryUsageBeforeGc();
 			Map<String, MemoryUsage> mem = info.getGcInfo().getMemoryUsageAfterGc();
 			for (Entry<String, MemoryUsage> entry : mem.entrySet()) {
@@ -72,17 +82,15 @@ public class GCNotificationListener implements NotificationListener {
 				memoryBefore.add("memMax", memBefore.getMax(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				memoryBefore.add("memUsed", memBefore.getUsed(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				long memUsage = ((memBefore.getUsed() * 100L)/ memBefore.getCommitted());
-				long percent = ((memAfter.getUsed()  * 100L)/ memBefore.getCommitted()); // >100% when it gets expanded
+				long afterUsage = ((memAfter.getUsed() * 100L)/ memBefore.getCommitted()); // >100% when it gets expanded
 				memoryBefore.add("memBeforeUsage", memUsage, ValueTypes.VALUE_TYPE_PERCENT);
-				memoryAfter.add("memAfterUsage", percent, ValueTypes.VALUE_TYPE_PERCENT);
+				memoryAfter.add("memAfterUsage", afterUsage, ValueTypes.VALUE_TYPE_PERCENT);
 				gcEvent.getOperation().addSnapshot(memoryBefore);
 				gcEvent.getOperation().addSnapshot(memoryAfter);
 			}
-			totalGcDuration += info.getGcInfo().getDuration();
-			long percent = (totalGcDuration * 100L) / info.getGcInfo().getEndTime();
 			gcEvent.getOperation().addProperty(logger.newProperty("gcId", info.getGcInfo().getId(), ValueTypes.VALUE_TYPE_COUNTER));
 			gcEvent.getOperation().addProperty(logger.newProperty("totalGCDuration", totalGcDuration, ValueTypes.VALUE_TYPE_AGE_MSEC));
-			gcEvent.getOperation().addProperty(logger.newProperty("totalGCOverhead", percent, ValueTypes.VALUE_TYPE_PERCENT));
+			gcEvent.getOperation().addProperty(logger.newProperty("totalGCOverhead", gcPercent, ValueTypes.VALUE_TYPE_PERCENT));
 			logger.tnt(gcEvent);
 		}
 	}
