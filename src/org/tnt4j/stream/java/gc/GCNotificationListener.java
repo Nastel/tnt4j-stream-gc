@@ -43,9 +43,18 @@ import com.sun.management.GarbageCollectionNotificationInfo;
 public class GCNotificationListener implements NotificationListener {
 	long totalGcDuration = 0;
 	TrackingLogger logger;
+	String resname;
 
-	public GCNotificationListener(TrackingLogger lg) {
+	/**
+	 * Create GC notification listener with a given {@code TrackingLogger}
+	 * instance and resource name.
+	 * 
+	 * @param lg {@code TrackingLogger} instance where all GC activities are logged
+	 * @param resourceName used for labeling GC tracking activity
+	 */
+	public GCNotificationListener(TrackingLogger lg, String resourceName) {
 	    this.logger = lg;
+	    this.resname = resourceName;
     }
 
 	@Override
@@ -68,7 +77,7 @@ public class GCNotificationListener implements NotificationListener {
 					info.getGcCause(),
 					info.getGcInfo().getStartTime(),
 					info.getGcInfo().getEndTime());
-			
+			gcEvent.getOperation().setResource(resname);
 			gcEvent.stop(TimeUnit.MILLISECONDS.toMicros(info.getGcInfo().getDuration()));
 			gcEvent.getOperation().setException(info.getGcCause());
 

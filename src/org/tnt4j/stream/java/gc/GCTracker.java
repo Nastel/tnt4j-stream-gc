@@ -34,7 +34,9 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * 
  */
 public class GCTracker {
-	private static final String DEFAULT_SOURCE_NAME = "org.tnt4j.stream.java.gc";
+	private static final String DEFAULT_SOURCE_NAME = System.getProperty("tnt4j.stream.gc.sourcename", "org.tnt4j.stream.java.gc");
+	private static final String DEFAULT_RESOURCE_NAME = System.getProperty("tnt4j.stream.gc.rsname", Utils.getVMName());
+
 	/*
 	 * Tracking logger instance where all GC tracking messages are recorded.
 	 */
@@ -60,33 +62,47 @@ public class GCTracker {
 	}
 	
 	/**
-	 * Install tracker with a default source name  {@code org.tnt4j.stream.java.gc} that must match
-	 * configuration in {@code tnt4j.properties}
+	 * Install tracker with a default resource and source name 
+	 * {@code org.tnt4j.stream.java.gc} that must match configuration
+	 * in {@code tnt4j.properties}
 	 * 
 	 */
 	public static void installTracker() {
-		installTracker(DEFAULT_SOURCE_NAME);
+		installTracker(DEFAULT_RESOURCE_NAME, DEFAULT_SOURCE_NAME);
+	}
+
+
+	/**
+	 * Install tracker with a default source name {@code org.tnt4j.stream.java.gc}
+	 * that must match configuration in {@code tnt4j.properties}
+	 * 
+	 * @param resourceName used for labeling GC tracking activity
+	 */
+	public static void installTracker(String resourceName) {
+		installTracker(resourceName, DEFAULT_SOURCE_NAME);
 	}
 
 	/**
 	 * Install tracker with a specified source name that must match
 	 * configuration in {@code tnt4j.properties}
 	 * 
+	 * @param sourceName matching tnt4j configuration
+	 * @param resourceName used for labeling GC tracking activity
 	 */
-	public static void installTracker(String sourceName) {
+	public static void installTracker(String resourceName, String sourceName) {
 		if (logger == null) {
 			createTracker(sourceName);
 			List<GarbageCollectorMXBean> gcbeans = java.lang.management.ManagementFactory.getGarbageCollectorMXBeans();
 			for (GarbageCollectorMXBean gcbean : gcbeans) {
 				NotificationEmitter emitter = (NotificationEmitter) gcbean;
-				NotificationListener listener = new GCNotificationListener(logger);
+				NotificationListener listener = new GCNotificationListener(logger, resourceName);
 				emitter.addNotificationListener(listener, null, null);
 			}
 		}
 	}
 
 	/**
-	 * Entry point to be loaded as -javaagent:jarpath[=source-name]
+	 * Entry point to be loaded as -javaagent:jarpath[=res-name,source-name]
 	 * Example: -javaagent:tnt4j-stream-gc.jar
 	 * 
 	 * @param options parameters if any
@@ -96,8 +112,13 @@ public class GCTracker {
 		if (Utils.isEmpty(options)) {
 			GCTracker.installTracker();
 		} else {
-			GCTracker.installTracker(options);			
+			String [] args = options.split(",");
+			if (args.length < 2) {
+				GCTracker.installTracker(args[0]);
+			} else {
+				GCTracker.installTracker(args[0], args[1]);
+			}
 		}
-		System.out.println("GCTracker: gc.tracker=" + GCTracker.getTracker().getSource());
+		System.out.println("GCTracker: options=" + options + ", gc.tracker=" + GCTracker.getTracker().getSource());
 	}
 }
