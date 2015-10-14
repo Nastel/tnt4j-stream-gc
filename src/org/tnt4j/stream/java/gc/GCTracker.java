@@ -26,6 +26,13 @@ import javax.management.NotificationListener;
 import com.nastel.jkool.tnt4j.TrackingLogger;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
+/**
+ * This class provides java agent implementation for tracking GC invocations
+ * using JMX notifications available in JDK1.7.04 or higher.
+ * 
+ * @version $Revision: 1 $
+ * 
+ */
 public class GCTracker {
 	private static final String DEFAULT_SOURCE_NAME = "org.tnt4j.stream.java.gc";
 	/*
@@ -42,14 +49,30 @@ public class GCTracker {
 		}
 	}
 
+	/**
+	 * Obtain {@code TrackingLogger} instance associated with this
+	 * tracker.
+	 * 
+	 * @return {@code TrackingLogger} instance
+	 */
 	public static TrackingLogger getTracker() {
 		return logger;
 	}
 	
+	/**
+	 * Install tracker with a default source name  {@code org.tnt4j.stream.java.gc} that must match
+	 * configuration in {@code tnt4j.properties}
+	 * 
+	 */
 	public static void installTracker() {
 		installTracker(DEFAULT_SOURCE_NAME);
 	}
 
+	/**
+	 * Install tracker with a specified source name that must match
+	 * configuration in {@code tnt4j.properties}
+	 * 
+	 */
 	public static void installTracker(String sourceName) {
 		if (logger == null) {
 			createTracker(sourceName);

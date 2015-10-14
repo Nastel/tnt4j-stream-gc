@@ -32,6 +32,14 @@ import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.sun.management.GarbageCollectionNotificationInfo;
 
+/**
+ * This class provides GC notification listener that extracts relevant GC metrics
+ * and streams over TNT4J frameworks. 
+ * GC JMX notifications available in JDK1.7.04 or higher.
+ * 
+ * @version $Revision: 1 $
+ * 
+ */
 public class GCNotificationListener implements NotificationListener {
 	long totalGcDuration = 0;
 	TrackingLogger logger;
@@ -46,7 +54,7 @@ public class GCNotificationListener implements NotificationListener {
 			GarbageCollectionNotificationInfo info = GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
 			
 			totalGcDuration += info.getGcInfo().getDuration();
-			long gcPercent = (totalGcDuration * 100L) / info.getGcInfo().getEndTime();
+			double gcPercent = ((double)totalGcDuration * 100.0) / (double)info.getGcInfo().getEndTime();
 
 			String msg = "GC action={0} gc.id={1} gc.type={2}, msg={3}, duration.ms={4}, total.gc.ms={5}, gc.percent={6}, gc.cause={7}, start.end.time={8}-{9}";			
 			TrackingEvent gcEvent = logger.newEvent(OpLevel.TRACE, OpType.CLEAR, info.getGcAction(), null, info.getGcName(), msg,
@@ -69,6 +77,7 @@ public class GCNotificationListener implements NotificationListener {
 			for (Entry<String, MemoryUsage> entry : mem.entrySet()) {
 				String name = entry.getKey();
 				Snapshot memoryAfter = logger.newSnapshot(info.getGcName(), name + "-After");	
+				// extract AFTER memory usage details
 				MemoryUsage memAfter = entry.getValue();
 				memoryAfter.add("memInit", memAfter.getInit(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				memoryAfter.add("memCommit", memAfter.getCommitted(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
@@ -76,6 +85,7 @@ public class GCNotificationListener implements NotificationListener {
 				memoryAfter.add("memUsed", memAfter.getUsed(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 
 				Snapshot memoryBefore = logger.newSnapshot(info.getGcName(), name + "-Before");
+				// extract BEFORE memory usage details			
 				MemoryUsage memBefore = membefore.get(name);
 				memoryBefore.add("memInit", memBefore.getInit(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				memoryBefore.add("memCommit", memBefore.getCommitted(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
@@ -85,6 +95,7 @@ public class GCNotificationListener implements NotificationListener {
 				long afterUsage = ((memAfter.getUsed() * 100L)/ memBefore.getCommitted()); // >100% when it gets expanded
 				memoryBefore.add("memBeforeUsage", memUsage, ValueTypes.VALUE_TYPE_PERCENT);
 				memoryAfter.add("memAfterUsage", afterUsage, ValueTypes.VALUE_TYPE_PERCENT);
+				
 				gcEvent.getOperation().addSnapshot(memoryBefore);
 				gcEvent.getOperation().addSnapshot(memoryAfter);
 			}
