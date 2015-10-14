@@ -24,16 +24,18 @@ import javax.management.NotificationEmitter;
 import javax.management.NotificationListener;
 
 import com.nastel.jkool.tnt4j.TrackingLogger;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 public class GCTracker {
+	private static final String DEFAULT_SOURCE_NAME = "org.tnt4j.stream.java.gc";
 	/*
 	 * Tracking logger instance where all GC tracking messages are recorded.
 	 */
 	private static TrackingLogger logger;
 
-	protected static void createTracker() {
+	protected static void createTracker(String sourceName) {
 		try {
-			logger = TrackingLogger.getInstance("org.tnt4j.stream.java.gc");
+			logger = TrackingLogger.getInstance(sourceName);
 			logger.open();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -45,8 +47,12 @@ public class GCTracker {
 	}
 	
 	public static void installTracker() {
+		installTracker(DEFAULT_SOURCE_NAME);
+	}
+
+	public static void installTracker(String sourceName) {
 		if (logger == null) {
-			createTracker();
+			createTracker(sourceName);
 			List<GarbageCollectorMXBean> gcbeans = java.lang.management.ManagementFactory.getGarbageCollectorMXBeans();
 			for (GarbageCollectorMXBean gcbean : gcbeans) {
 				NotificationEmitter emitter = (NotificationEmitter) gcbean;
@@ -57,14 +63,18 @@ public class GCTracker {
 	}
 
 	/**
-	 * Entry point to be loaded as -javaagent:jarpath
+	 * Entry point to be loaded as -javaagent:jarpath[=source-name]
 	 * Example: -javaagent:tnt4j-stream-gc.jar
 	 * 
 	 * @param options parameters if any
 	 * @param inst instrumentation handle
 	 */
 	public static void premain(String options, Instrumentation inst) throws IOException {
-		GCTracker.installTracker();
+		if (Utils.isEmpty(options)) {
+			GCTracker.installTracker();
+		} else {
+			GCTracker.installTracker(options);			
+		}
 		System.out.println("GCTracker: gc.tracker=" + GCTracker.getTracker().getSource());
 	}
 }
