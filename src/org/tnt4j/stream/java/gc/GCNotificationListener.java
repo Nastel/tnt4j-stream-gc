@@ -92,6 +92,8 @@ public class GCNotificationListener implements NotificationListener {
 				memoryAfter.add("memCommit", memAfter.getCommitted(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				memoryAfter.add("memMax", memAfter.getMax(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				memoryAfter.add("memUsed", memAfter.getUsed(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
+				long memUsage = ((memAfter.getUsed() * 100L)/ memAfter.getCommitted());
+				memoryAfter.add("memUsage", memUsage, ValueTypes.VALUE_TYPE_PERCENT);
 
 				Snapshot memoryBefore = logger.newSnapshot(info.getGcName(), name + "-Before");
 				// extract BEFORE memory usage details			
@@ -100,15 +102,19 @@ public class GCNotificationListener implements NotificationListener {
 				memoryBefore.add("memCommit", memBefore.getCommitted(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				memoryBefore.add("memMax", memBefore.getMax(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				memoryBefore.add("memUsed", memBefore.getUsed(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
-				long memUsage = ((memBefore.getUsed() * 100L)/ memBefore.getCommitted());
+				
+				memUsage = ((memBefore.getUsed() * 100L)/ memBefore.getCommitted());
 				long afterUsage = ((memAfter.getUsed() * 100L)/ memBefore.getCommitted()); // >100% when it gets expanded
-				memoryBefore.add("memBeforeUsage", memUsage, ValueTypes.VALUE_TYPE_PERCENT);
+				memoryBefore.add("memUsage", memUsage, ValueTypes.VALUE_TYPE_PERCENT);
 				memoryAfter.add("memAfterUsage", afterUsage, ValueTypes.VALUE_TYPE_PERCENT);
 				
 				gcEvent.getOperation().addSnapshot(memoryBefore);
 				gcEvent.getOperation().addSnapshot(memoryAfter);
 			}
+			long gcUsage = ((info.getGcInfo().getDuration() * 100L)/ totalGcDuration); 
 			gcEvent.getOperation().addProperty(logger.newProperty("gcId", info.getGcInfo().getId(), ValueTypes.VALUE_TYPE_COUNTER));
+			gcEvent.getOperation().addProperty(logger.newProperty("gcCycleUsage", gcUsage, ValueTypes.VALUE_TYPE_PERCENT));
+			gcEvent.getOperation().addProperty(logger.newProperty("gcCycleDuration", info.getGcInfo().getDuration(), ValueTypes.VALUE_TYPE_AGE_MSEC));
 			gcEvent.getOperation().addProperty(logger.newProperty("totalGCDuration", totalGcDuration, ValueTypes.VALUE_TYPE_AGE_MSEC));
 			gcEvent.getOperation().addProperty(logger.newProperty("totalGCOverhead", gcPercent, ValueTypes.VALUE_TYPE_PERCENT));
 			logger.tnt(gcEvent);
