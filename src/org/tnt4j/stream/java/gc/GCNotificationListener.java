@@ -104,16 +104,20 @@ public class GCNotificationListener implements NotificationListener {
 				memoryBefore.add("memUsed", memBefore.getUsed(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				memoryBefore.add("memCommitted", memBefore.getCommitted(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				
-				memUsage = ((memBefore.getUsed() * 100L)/ memBefore.getCommitted());
+				memUsage = ((memBefore.getUsed() * 100L) / memBefore.getCommitted());
 				memoryBefore.add("memUsage", memUsage, ValueTypes.VALUE_TYPE_PERCENT);
 
-				long afterUsage = ((memAfter.getUsed() * 100L)/ memBefore.getCommitted()); // >100% when it gets expanded
+				long afterUsage = ((memAfter.getUsed() * 100L) / memBefore.getCommitted());
 				memoryAfter.add("memAfterUsage", afterUsage, ValueTypes.VALUE_TYPE_PERCENT);
+
+				long deltaUsage = (((memAfter.getUsed() - memBefore.getUsed()) * 100L) / memBefore.getCommitted());
+				memoryAfter.add("memUsedDelta", (memAfter.getUsed() - memBefore.getUsed()), ValueTypes.VALUE_TYPE_SIZE_BYTE);
+				memoryAfter.add("memUsedDeltaUsage", deltaUsage, ValueTypes.VALUE_TYPE_PERCENT);
 				
 				gcEvent.getOperation().addSnapshot(memoryBefore);
 				gcEvent.getOperation().addSnapshot(memoryAfter);
 			}
-			long gcUsage = ((info.getGcInfo().getDuration() * 100L)/ totalGcDuration); 
+			double gcUsage = (((double)info.getGcInfo().getDuration() * 100.0) / (double)totalGcDuration); 
 			gcEvent.getOperation().addProperty(logger.newProperty("gcId", info.getGcInfo().getId(), ValueTypes.VALUE_TYPE_COUNTER));
 			gcEvent.getOperation().addProperty(logger.newProperty("gcCycleUsage", gcUsage, ValueTypes.VALUE_TYPE_PERCENT));
 			gcEvent.getOperation().addProperty(logger.newProperty("gcCycleDuration", info.getGcInfo().getDuration(), ValueTypes.VALUE_TYPE_AGE_MSEC));
