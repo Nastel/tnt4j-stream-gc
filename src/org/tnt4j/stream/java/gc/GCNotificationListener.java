@@ -89,9 +89,10 @@ public class GCNotificationListener implements NotificationListener {
 				// extract AFTER memory usage details
 				MemoryUsage memAfter = entry.getValue();
 				memoryAfter.add("memInit", memAfter.getInit(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
-				memoryAfter.add("memCommit", memAfter.getCommitted(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				memoryAfter.add("memMax", memAfter.getMax(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				memoryAfter.add("memUsed", memAfter.getUsed(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
+				memoryAfter.add("memCommitted", memAfter.getCommitted(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
+				
 				long memUsage = ((memAfter.getUsed() * 100L)/ memAfter.getCommitted());
 				memoryAfter.add("memUsage", memUsage, ValueTypes.VALUE_TYPE_PERCENT);
 
@@ -99,13 +100,14 @@ public class GCNotificationListener implements NotificationListener {
 				// extract BEFORE memory usage details			
 				MemoryUsage memBefore = membefore.get(name);
 				memoryBefore.add("memInit", memBefore.getInit(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
-				memoryBefore.add("memCommit", memBefore.getCommitted(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				memoryBefore.add("memMax", memBefore.getMax(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				memoryBefore.add("memUsed", memBefore.getUsed(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
+				memoryBefore.add("memCommitted", memBefore.getCommitted(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 				
 				memUsage = ((memBefore.getUsed() * 100L)/ memBefore.getCommitted());
-				long afterUsage = ((memAfter.getUsed() * 100L)/ memBefore.getCommitted()); // >100% when it gets expanded
 				memoryBefore.add("memUsage", memUsage, ValueTypes.VALUE_TYPE_PERCENT);
+
+				long afterUsage = ((memAfter.getUsed() * 100L)/ memBefore.getCommitted()); // >100% when it gets expanded
 				memoryAfter.add("memAfterUsage", afterUsage, ValueTypes.VALUE_TYPE_PERCENT);
 				
 				gcEvent.getOperation().addSnapshot(memoryBefore);
