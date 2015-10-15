@@ -34,7 +34,7 @@ import com.sun.management.GarbageCollectionNotificationInfo;
 
 /**
  * This class provides GC notification listener that extracts relevant GC metrics
- * and streams over TNT4J frameworks. 
+ * and streams over TNT4J framework. 
  * GC JMX notifications available in JDK1.7.04 or higher.
  * 
  * @version $Revision: 1 $
