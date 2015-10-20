@@ -2,6 +2,8 @@
 Track and trace java GC behavior using JAVA JMX GC notifications.
 
 Features:
+* GC metric collection from 1+ JVMs without profilers
+  * Production, test environments
 * Measure GC performance, duration
 * Measure memory pools before and after GC cycles
 * Java Memory pool utilization
