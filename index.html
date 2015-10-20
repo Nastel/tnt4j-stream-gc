@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>tnt4j-stream-gc by Nastel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">tnt4j-stream-gc</h1>
+      <h2 class="project-tagline">Track and trace Java GC behavior without Profilers</h2>
+      <a href="https://github.com/Nastel/tnt4j-stream-gc" class="btn">View on GitHub</a>
+      <a href="https://github.com/Nastel/tnt4j-stream-gc/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/Nastel/tnt4j-stream-gc/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="tnt4j-stream-gc" class="anchor" href="#tnt4j-stream-gc" aria-hidden="true"><span class="octicon octicon-link"></span></a>tnt4j-stream-gc</h1>
+
+<p>Track and trace java GC behavior using JAVA JMX GC notifications.</p>
+
+<p>Features:</p>
+
+<ul>
+<li>Measure GC performance, duration</li>
+<li>Measure memory pools before and after GC cycles</li>
+<li>Java Memory pool utilization</li>
+<li>Help troubleshoot and tune java GC</li>
+<li>Stream GC details to file, log4j</li>
+<li>Stream to <a href="https://www.jkoolcloud.com">https://www.jkoolcloud.com</a> for visual analysis 
+
+<ul>
+<li>Requires jKoolCloud Event Sink (<a href="https://github.com/Nastel/JESL">https://github.com/Nastel/JESL</a>)</li>
+</ul>
+</li>
+</ul>
+
+<p>Running Stream-GC as javaagent:</p>
+
+<div class="highlight highlight-source-java"><pre>java <span class="pl-k">-</span>javaagent<span class="pl-k">:</span>tnt4j<span class="pl-k">-</span>stream<span class="pl-k">-</span>gc<span class="pl-k">.</span>jar<span class="pl-k">=</span>myApplName <span class="pl-k">-</span><span class="pl-smi">Dtnt4j</span><span class="pl-k">.</span>config<span class="pl-k">=</span>tnt4j<span class="pl-k">.</span>properties <span class="pl-k">-</span>classpath <span class="pl-s"><span class="pl-pds">"</span>lib/tnt4j-api-final-all.jar<span class="pl-pds">"</span></span> your<span class="pl-k">.</span>class<span class="pl-k">.</span>name your<span class="pl-k">-</span>args</pre></div>
+
+<p>Running Stream-GC as javaagent with JESL (streaming to jKoolCloud):</p>
+
+<div class="highlight highlight-source-java"><pre>java <span class="pl-k">-</span>javaagent<span class="pl-k">:</span>tnt4j<span class="pl-k">-</span>stream<span class="pl-k">-</span>gc<span class="pl-k">.</span>jar<span class="pl-k">=</span>myApplName <span class="pl-k">-</span><span class="pl-smi">Dtnt4j</span><span class="pl-k">.</span>config<span class="pl-k">=</span>tnt4j<span class="pl-k">.</span>properties <span class="pl-k">-</span>classpath “lib<span class="pl-k">/</span>tnt4j<span class="pl-k">-</span>api<span class="pl-k">-</span><span class="pl-k">final</span><span class="pl-k">-</span>all<span class="pl-k">.</span>jar;jesl<span class="pl-k">/</span>jkool<span class="pl-k">-</span>jesl<span class="pl-k">.</span>jar;jesl<span class="pl-k">/</span>lib<span class="pl-k">/</span>httpcore<span class="pl-k">-</span><span class="pl-c1">4.2</span><span class="pl-k">.</span>4<span class="pl-k">.</span>jar;jesl<span class="pl-k">/</span>lib<span class="pl-k">/</span>httpclient<span class="pl-k">-</span><span class="pl-c1">4.2</span><span class="pl-k">.</span>5<span class="pl-k">.</span>jar<span class="pl-s"><span class="pl-pds">"</span> your.class.name your-args</span></pre></div>
+
+<p>Invoking Stream-GC within java app:</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-k">import</span> <span class="pl-smi">org.tnt4j.stream.java.gc.GCTracker</span>;
+
+<span class="pl-smi">GCTracker</span><span class="pl-k">.</span>installTracker(<span class="pl-s"><span class="pl-pds">"</span>myAppName<span class="pl-pds">"</span></span>); <span class="pl-c">// need to be called only once per JVM</span></pre></div>
+
+<h1>
+<a id="project-dependencies" class="anchor" href="#project-dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Dependencies</h1>
+
+<p>Stream-GC requires the following:</p>
+
+<ul>
+<li>JDK 1.7+ (Update 04 or higher)</li>
+<li>TNT4J (<a href="https://github.com/Nastel/TNT4J">https://github.com/Nastel/TNT4J</a>)</li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/Nastel/tnt4j-stream-gc">tnt4j-stream-gc</a> is maintained by <a href="https://github.com/Nastel">Nastel</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
