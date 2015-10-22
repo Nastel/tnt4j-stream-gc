@@ -89,18 +89,31 @@ public class GCTracker {
 	 * @param sourceName matching tnt4j configuration
 	 * @param resourceName used for labeling GC tracking activity
 	 */
-	public static void installTracker(String resourceName, String sourceName) {
+	public synchronized static void installTracker(String resourceName, String sourceName) {
 		if (logger == null) {
 			createTracker(sourceName);
+			Runtime.getRuntime().addShutdownHook(new Thread(new VMShutdownHook(getTracker())));
 			List<GarbageCollectorMXBean> gcbeans = java.lang.management.ManagementFactory.getGarbageCollectorMXBeans();
 			for (GarbageCollectorMXBean gcbean : gcbeans) {
 				NotificationEmitter emitter = (NotificationEmitter) gcbean;
-				NotificationListener listener = new GCNotificationListener(logger, resourceName);
+				NotificationListener listener = new GCNotificationListener(getTracker(), resourceName);
 				emitter.addNotificationListener(listener, null, null);
 			}
 		}
 	}
 
+	/**
+	 * Set the default handler invoked when a thread abruptly terminates due to an uncaught exception,
+	 * and no other handler has been defined for that thread. 
+	 * This call should be called after {@link #installTracker(String, String)}
+	 * 
+	 */
+	public static void trackThreadUncaughtExceptions() {
+		if (getTracker() != null) {
+			Thread.setDefaultUncaughtExceptionHandler(new VMShutdownHook(getTracker()));
+		}
+	}
+	
 	/**
 	 * Entry point to be loaded as -javaagent:jarpath[=res-name,source-name]
 	 * Example: -javaagent:tnt4j-stream-gc.jar
