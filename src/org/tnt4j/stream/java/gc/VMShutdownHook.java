@@ -54,7 +54,7 @@ public class VMShutdownHook implements Runnable, Thread.UncaughtExceptionHandler
 		long uptime = ManagementFactory.getRuntimeMXBean().getUptime();
 		logger.tnt(OpLevel.DEBUG, 
 				OpType.STOP, "vm-shutdown", 
-				null, ManagementFactory.getRuntimeMXBean().getUptime(),
+				null, uptime,
 				Utils.getVMName() + " stopped, uptime={0}", uptime);
 		flush();
 	}
