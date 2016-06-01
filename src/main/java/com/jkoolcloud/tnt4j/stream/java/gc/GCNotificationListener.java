@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tnt4j.stream.java.gc;
+package com.jkoolcloud.tnt4j.stream.java.gc;
 
 import java.lang.management.MemoryUsage;
 import java.util.Map;
@@ -24,12 +24,12 @@ import javax.management.Notification;
 import javax.management.NotificationListener;
 import javax.management.openmbean.CompositeData;
 
-import com.nastel.jkool.tnt4j.TrackingLogger;
-import com.nastel.jkool.tnt4j.core.OpLevel;
-import com.nastel.jkool.tnt4j.core.OpType;
-import com.nastel.jkool.tnt4j.core.Snapshot;
-import com.nastel.jkool.tnt4j.core.ValueTypes;
-import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
+import com.jkoolcloud.tnt4j.TrackingLogger;
+import com.jkoolcloud.tnt4j.core.OpLevel;
+import com.jkoolcloud.tnt4j.core.OpType;
+import com.jkoolcloud.tnt4j.core.Snapshot;
+import com.jkoolcloud.tnt4j.core.ValueTypes;
+import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 import com.sun.management.GarbageCollectionNotificationInfo;
 
 /**

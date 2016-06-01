@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tnt4j.stream.java.gc;
+package com.jkoolcloud.tnt4j.stream.java.gc;
 
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
@@ -23,8 +23,8 @@ import java.util.List;
 import javax.management.NotificationEmitter;
 import javax.management.NotificationListener;
 
-import com.nastel.jkool.tnt4j.TrackingLogger;
-import com.nastel.jkool.tnt4j.utils.Utils;
+import com.jkoolcloud.tnt4j.TrackingLogger;
+import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * This class provides java agent implementation for tracking GC invocations
