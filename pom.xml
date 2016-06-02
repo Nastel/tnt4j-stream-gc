@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.jkoolcloud.tnt4j.stream.java.</groupId>
+  <groupId>com.jkoolcloud.tnt4j.stream.java</groupId>
   <artifactId>gc</artifactId>
   <version>0.1.5</version>
   <packaging>jar</packaging>
@@ -33,7 +33,7 @@
 	 <repository>
       	<id>bintray-amavashev2-jkoolcloud</id>
       	<name>amavashev2-jkoolcloud</name>
-      	<url>https://api.bintray.com/maven/amavashev2/jkoolcloud/stream-gc/;publish=1;override=1;</url>
+      	<url>https://api.bintray.com/maven/amavashev2/jkoolcloud/stream-gc/;publish=1;override=1</url>
   	 </repository>
   </distributionManagement>
   
