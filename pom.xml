@@ -3,13 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.jkoolcloud.tnt4j.stream.java</groupId>
-  <artifactId>gc</artifactId>
+  <artifactId>tnt4j-stream-gc</artifactId>
   <version>0.1.5</version>
   <packaging>jar</packaging>
 
-  <name>stream-gc</name>
+  <name>tnt4j-stream-gc</name>
   <url>http://www.jkoolcloud.com/</url>
-  <description>Data Streaming, Data Analytics</description>
+  <description>Java GC event capture and streaming over TNT4J</description>
   <licenses>
   <license>
     <name>The Apache License, Version 2.0</name>
