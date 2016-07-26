@@ -14,12 +14,12 @@ Features:
 
 Running Stream-GC as javaagent:
 ```java
-java -javaagent:tnt4j-stream-gc.jar=myApplName -Dtnt4j.config=tnt4j.properties -classpath "lib/tnt4j-api-final-all.jar" your.class.name your-args
+java -javaagent:tnt4j-stream-gc.jar=myApplName -Dtnt4j.config=tnt4j.properties -classpath "lib/*" your.class.name your-args
 ```
 
 Running Stream-GC as javaagent with JESL (streaming to jKoolCloud):
 ```java
-java -javaagent:tnt4j-stream-gc.jar=myApplName -Dtnt4j.config=tnt4j.properties -classpath “lib/tnt4j-api-final-all.jar;jesl/jkool-jesl.jar;jesl/lib/httpcore-4.2.4.jar;jesl/lib/httpclient-4.2.5.jar" your.class.name your-args
+java -javaagent:tnt4j-stream-gc.jar=myApplName -Dtnt4j.config=tnt4j.properties -classpath “lib/*" your.class.name your-args
 ```
 
 Invoking Stream-GC within java app:
