@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,7 @@ import com.jkoolcloud.tnt4j.core.OpType;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
- * VM shutdown hook implementation that generates tracking events on UncaughtException
- * as well as on JVM shutdown.
+ * VM shutdown hook implementation that generates tracking events on UncaughtException as well as on JVM shutdown.
  * 
  * @version $Revision: 1 $
  * 
@@ -35,35 +34,31 @@ public class VMShutdownHook implements Runnable, Thread.UncaughtExceptionHandler
 
 	AtomicLong lastError = new AtomicLong(0);
 	TrackingLogger logger;
-	
+
 	public VMShutdownHook(TrackingLogger lg) {
 		logger = lg;
 	}
-	
+
 	@Override
-    public void uncaughtException(Thread t, Throwable e) {
-		long elapsed = lastError.get() > 0? (System.currentTimeMillis() - lastError.get()): 0;
-		logger.tnt(OpLevel.FATAL, 
-				OpType.EVENT, "uncaughtException-" + t.getName(),
-				null, TimeUnit.MILLISECONDS.toMicros(elapsed),
-				e.getMessage(), e);
+	public void uncaughtException(Thread t, Throwable e) {
+		long elapsed = lastError.get() > 0 ? (System.currentTimeMillis() - lastError.get()) : 0;
+		logger.tnt(OpLevel.FATAL, OpType.EVENT, "uncaughtException-" + t.getName(), null,
+				TimeUnit.MILLISECONDS.toMicros(elapsed), e.getMessage(), e);
 	}
 
 	@Override
-    public void run() {
+	public void run() {
 		long uptime = ManagementFactory.getRuntimeMXBean().getUptime();
-		logger.tnt(OpLevel.DEBUG, 
-				OpType.STOP, "vm-shutdown", 
-				null, uptime,
-				Utils.getVMName() + " stopped, uptime={0}", uptime);
+		logger.tnt(OpLevel.DEBUG, OpType.STOP, "vm-shutdown", null, uptime, Utils.getVMName() + " stopped, uptime={0}",
+				uptime);
 		flush();
 	}
-	
+
 	private void flush() {
 		try {
-	        logger.getEventSink().flush();
-        } catch (Throwable e) {
-        	e.printStackTrace();
-        }		
+			logger.getEventSink().flush();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 	}
 }

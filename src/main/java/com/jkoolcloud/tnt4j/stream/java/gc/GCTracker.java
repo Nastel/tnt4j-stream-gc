@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,14 +27,15 @@ import com.jkoolcloud.tnt4j.TrackingLogger;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
- * This class provides java agent implementation for tracking GC invocations
- * using JMX notifications available in JDK1.7.04 or higher.
+ * This class provides java agent implementation for tracking GC invocations using JMX notifications available in
+ * JDK1.7.04 or higher.
  * 
  * @version $Revision: 1 $
  * 
  */
 public class GCTracker {
-	private static final String DEFAULT_SOURCE_NAME = System.getProperty("tnt4j.stream.gc.sourcename", "org.tnt4j.stream.java.gc");
+	private static final String DEFAULT_SOURCE_NAME = System.getProperty("tnt4j.stream.gc.sourcename",
+			"org.tnt4j.stream.java.gc");
 	private static final String DEFAULT_RESOURCE_NAME = System.getProperty("tnt4j.stream.gc.rsname", Utils.getVMName());
 
 	/*
@@ -52,42 +53,41 @@ public class GCTracker {
 	}
 
 	/**
-	 * Obtain {@code TrackingLogger} instance associated with this
-	 * tracker.
+	 * Obtain {@code TrackingLogger} instance associated with this tracker.
 	 * 
 	 * @return {@code TrackingLogger} instance
 	 */
 	public static TrackingLogger getTracker() {
 		return logger;
 	}
-	
+
 	/**
-	 * Install tracker with a default resource and source name 
-	 * {@code org.tnt4j.stream.java.gc} that must match configuration
-	 * in {@code tnt4j.properties}
+	 * Install tracker with a default resource and source name {@code org.tnt4j.stream.java.gc} that must match
+	 * configuration in {@code tnt4j.properties}
 	 * 
 	 */
 	public static void installTracker() {
 		installTracker(DEFAULT_RESOURCE_NAME, DEFAULT_SOURCE_NAME);
 	}
 
-
 	/**
-	 * Install tracker with a default source name {@code org.tnt4j.stream.java.gc}
-	 * that must match configuration in {@code tnt4j.properties}
+	 * Install tracker with a default source name {@code org.tnt4j.stream.java.gc} that must match configuration in
+	 * {@code tnt4j.properties}
 	 * 
-	 * @param resourceName used for labeling GC tracking activity
+	 * @param resourceName
+	 *            used for labeling GC tracking activity
 	 */
 	public static void installTracker(String resourceName) {
 		installTracker(resourceName, DEFAULT_SOURCE_NAME);
 	}
 
 	/**
-	 * Install tracker with a specified source name that must match
-	 * configuration in {@code tnt4j.properties}
+	 * Install tracker with a specified source name that must match configuration in {@code tnt4j.properties}
 	 * 
-	 * @param sourceName matching tnt4j configuration
-	 * @param resourceName used for labeling GC tracking activity
+	 * @param sourceName
+	 *            matching tnt4j configuration
+	 * @param resourceName
+	 *            used for labeling GC tracking activity
 	 */
 	public synchronized static void installTracker(String resourceName, String sourceName) {
 		if (logger == null) {
@@ -103,9 +103,9 @@ public class GCTracker {
 	}
 
 	/**
-	 * Set the default handler invoked when a thread abruptly terminates due to an uncaught exception,
-	 * and no other handler has been defined for that thread. 
-	 * This call should be called after {@link #installTracker(String, String)}
+	 * Set the default handler invoked when a thread abruptly terminates due to an uncaught exception, and no other
+	 * handler has been defined for that thread. This call should be called after
+	 * {@link #installTracker(String, String)}
 	 * 
 	 */
 	public static void trackThreadUncaughtExceptions() {
@@ -113,19 +113,21 @@ public class GCTracker {
 			Thread.setDefaultUncaughtExceptionHandler(new VMShutdownHook(getTracker()));
 		}
 	}
-	
+
 	/**
-	 * Entry point to be loaded as -javaagent:jarpath[=res-name,source-name]
-	 * Example: -javaagent:tnt4j-stream-gc.jar
+	 * Entry point to be loaded as -javaagent:jarpath[=res-name,source-name] Example:
+	 * {@code -javaagent:tnt4j-stream-gc.jar}
 	 * 
-	 * @param options parameters if any
-	 * @param inst instrumentation handle
+	 * @param options
+	 *            parameters if any
+	 * @param inst
+	 *            instrumentation handle
 	 */
 	public static void premain(String options, Instrumentation inst) throws IOException {
 		if (Utils.isEmpty(options)) {
 			GCTracker.installTracker();
 		} else {
-			String [] args = options.split(",");
+			String[] args = options.split(",");
 			if (args.length < 2) {
 				GCTracker.installTracker(args[0]);
 			} else {
