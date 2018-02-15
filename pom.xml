@@ -38,6 +38,7 @@
     </distributionManagement>
 
     <properties>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <product.vendor>jKool, LLC</product.vendor>
 
@@ -197,7 +198,7 @@
                         <manifestEntries>
                             <Implementation-Vendor>${product.vendor}</Implementation-Vendor>
                             <Implementation-Title>${project.name}</Implementation-Title>
-                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Version>${project.version}-${maven.build.timestamp}</Implementation-Version>
                             <Premain-Class>com.jkoolcloud.tnt4j.stream.java.gc.GCTracker</Premain-Class>
                         </manifestEntries>
                     </archive>
