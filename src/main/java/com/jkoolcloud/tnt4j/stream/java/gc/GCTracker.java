@@ -122,6 +122,8 @@ public class GCTracker {
 	 *            parameters if any
 	 * @param inst
 	 *            instrumentation handle
+	 * @throws java.io.IOException
+	 *             if agent loading or initialization fails
 	 */
 	public static void premain(String options, Instrumentation inst) throws IOException {
 		if (Utils.isEmpty(options)) {
