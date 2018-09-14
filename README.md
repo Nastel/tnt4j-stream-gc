@@ -34,6 +34,4 @@ Stream-GC requires the following:
 * JDK 1.7+ (Update 04 or higher)
 * TNT4J (https://github.com/Nastel/TNT4J)
 
-Please use JCenter or Maven and dependencies will be downloaded automatically. 
-
-
+Please use JCenter or Maven and dependencies will be downloaded automatically.
