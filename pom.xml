@@ -64,14 +64,8 @@
     <dependencies>
         <dependency>
             <groupId>com.jkoolcloud</groupId>
-            <artifactId>tnt4j</artifactId>
-            <version>2.10.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jkoolcloud</groupId>
             <artifactId>jesl</artifactId>
-            <version>0.6</version>
-            <scope>runtime</scope>
+            <version>0.9-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.jkoolcloud.jesl.net</groupId>
@@ -80,19 +74,6 @@
             </exclusions>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>doclint-java8-disable</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <javadoc.opts>-Xdoclint:none</javadoc.opts>
-                <javadoc.failOnError>false</javadoc.failOnError>
-            </properties>
-        </profile>
-    </profiles>
 
     <build>
         <defaultGoal>clean install</defaultGoal>
@@ -128,7 +109,8 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.1</version>
                 <configuration>
-                    <failOnError>${javadoc.failOnError}</failOnError>
+                    <failOnError>false</failOnError>
+                    <doclint>all</doclint>
                 </configuration>
                 <executions>
                     <execution>
